@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <title>Hello World</title>
+    </head>
+    <body>
+        <div class="app">
+            <h1>PhoneGap</h1>
+            <div id="deviceready">
+                <p class="status pending blink">Connecting to Device</p>
+                <p class="status complete blink hide">Device is Ready</p>
+                <p><span id="spnConnect"></span></p>
+            </div>
+            <p id="deviceProperties">Loading device properties...</p>
+        </div>
+        <script type="text/javascript" src="phonegap.js"></script>
+        <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+        <script type="text/javascript" src="js/phonegap-websocket.js"></script> 
+        <script type="text/javascript" src="js/apprealkit/apprealkit.nocache.js"></script>       
+        <script type="text/javascript" src="js/index.js"></script>        
+        <script type="text/javascript">
+            app.initialize();
+        </script>
+        <script language="javascript"> 
+            var hostIP = "192.168.10.102"; //Change to api.apprealkit.com - 8080 (PRODUCTION)
+            var iPort = 9090;
+            var appID = "080693ab-7123-4aee-b560-9f6a8a332a43"; //Change to your APP-ID and APP-SECRET
+            var appSecret = "VORAI5D6yz";
+            var bDebug = false;
+            var iLoginID = "1234";
+            var iMemberID = "5678";
+
+            /**
+            * Callback function which execute after opening the connection
+            */
+            function onKitOpen(jsonMessage, iCode) {    
+                var element = document.getElementById('spnConnect');        
+                element.innerHTML = "The connection is ready for using. Continue to set AppID and AppSecret now!";
+				
+				//Set product ID				
+				arkb.setProductID(appID, appSecret);
+				
+				//Authenticate EXAMPLE
+				arkb.authenticate(iLoginID, function(jsonMessage, iCode) {
+					alert(jsonMessage);
+				});
+            }
+            
+            /**
+            * Callback function which execute when get the message from servers
+            */
+            function onKitMessage(jsonMessage, iCode) {         
+                alert(jsonMessage);
+            }
+            
+            /**
+            * Callback function which execute after sending message
+            */
+            function onKitSent(jsonMessage, iCode) {
+                //alert("Ready to sent message to this connection");
+            }
+            
+            /**
+            * Callback function which execute after closing the connection
+            */
+            function onKitClose(jsonMessage, iCode) {           
+                alert("Ready to close this connection");
+            }
+        
+            /**
+            * Callback function which execute when start AppRealKit
+            */
+            function arkReady() {
+                //Debug mode
+                arkb.setVerbose(true);
+                
+                //Read connect
+                var element = document.getElementById('spnConnect');
+                element.innerHTML = "READY TO CONNECT to ARK Cloud";
+				
+				//Connect to ApprealKit Server				
+                arkb.connect(hostIP, iPort);
+            }
+        </script>
+        <script type="text/javascript" charset="utf-8">
+            // Wait for device API libraries to load
+            //
+            document.addEventListener("deviceready", onDeviceReady, false);
+
+            // device APIs are available
+            //
+            function onDeviceReady() {				
+                var element = document.getElementById('deviceProperties');
+                element.innerHTML = 'Device Model: '    + device.model    + '<br />' +
+                                    'Device Cordova: '  + device.cordova  + '<br />' +
+                                    'Device Platform: ' + device.platform + '<br />' +
+                                    'Device UUID: '     + device.uuid     + '<br />' +
+                                    'Device Version: '  + device.version  + '<br />';                
+            }
+        </script>
+    </body>
+</html>
